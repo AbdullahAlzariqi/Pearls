@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/AbdullahAlzariqi/Pearls/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -28,4 +29,22 @@ func ConnectPostgres() {
 	}
 
 	log.Println("Connected to PostgreSQL")
+}
+
+func AutoMigrateModels() {
+	err := DB.AutoMigrate(
+		&models.User{},
+		&models.Team{},
+		&models.Role{},
+		&models.Permission{},
+		&models.UserRole{},
+		&models.RolePermission{},
+		// Add other models here
+	)
+	if err != nil {
+		log.Fatal("Failed to auto-migrate models:", err)
+	}
+
+	// Optionally, initialize UUID generation if necessary
+	// GORM doesn't handle UUID generation by default, you may need hooks or default values
 }
