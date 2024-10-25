@@ -6,14 +6,29 @@ import (
 	"log"
 	"time"
 
+	"github.com/AbdullahAlzariqi/Pearls/db"
 	"github.com/AbdullahAlzariqi/Pearls/models"
 	"github.com/AbdullahAlzariqi/Pearls/services"
+
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	// ... (previous connection code)
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file found")
+	}
 
+	// Connect to PostgreSQL
+	db.ConnectPostgres()
+
+	// Connect to MongoDB
+	db.ConnectMongoDB()
+
+	// Auto-migrate PostgreSQL models
+	db.AutoMigrateModels()
 	// Example: Create a new user
 	newUser := &models.User{
 		UserID:       uuid.New(),
@@ -24,7 +39,7 @@ func main() {
 		TeamID:       uuid.New(), // Ensure the team exists
 	}
 
-	err := services.CreateUser(newUser)
+	err = services.CreateUser(newUser)
 	if err != nil {
 		log.Fatal("Error creating user:", err)
 	}
